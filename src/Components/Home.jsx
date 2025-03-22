@@ -1,3 +1,4 @@
+import AdminDashboard from "./Admin";
 import Competitions from "./Competitions";
 import ContactUs from "./ContactUs";
 import Hero from "./Hero";
@@ -10,6 +11,7 @@ export default function Home() {
   
   return(
     <div className="font-montserrat">
+      <AdminDashboard />
       <Profile />
       <Navbar 
         linkItems={linkItems}
