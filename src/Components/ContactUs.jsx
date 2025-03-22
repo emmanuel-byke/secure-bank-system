@@ -3,7 +3,7 @@ import { NeonIcon } from "./IconEnhancer";
 
 export default function ContactUs() {
     return (
-        <footer className="w-full bg-gradient-to-b from-[#0a0a0a] to-[#141414] border-t border-white/5 mt-20">
+        <footer className="w-full bg-gradient-to-b from-[#0a0a0a] to-[#141414] border-t border-white/5 mt-20" id="about">
             <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-8">
                 {/* Branding Column */}
                 <div className="space-y-6">

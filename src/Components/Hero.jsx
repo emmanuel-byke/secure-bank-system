@@ -3,7 +3,7 @@ import { NeonIcon } from "./IconEnhancer";
 
 export default function Hero() {
     return (
-        <main className="w-full h-screen bg-[#1b1e24] flex flex-col items-center justify-center relative overflow-hidden">
+        <main className="w-full h-screen bg-[#1b1e24] flex flex-col items-center justify-center relative overflow-hidden" id="home">
             {/* Animated background elements */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-r from-[var(--color-secondary)/10%] to-transparent rounded-full blur-3xl" />

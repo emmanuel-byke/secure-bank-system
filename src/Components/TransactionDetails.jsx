@@ -9,7 +9,7 @@ export default function TransactionDetails() {
 
     return (
         <main>
-            <div className="w-full flex flex-row flex-wrap justify-center mt-20">
+            <div className="w-full flex flex-row flex-wrap justify-center mt-20" id="transactions">
                 <IconCard 
                     icon={NeonIcon}
                     iconControls={{icon: Banknote, color: 'var(--color-primary)'}}

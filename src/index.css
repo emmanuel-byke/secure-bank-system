@@ -23,7 +23,7 @@
 
 .dark {
   --color-neutral: #202020;
-  --color-primary: #cecece;
+  --color-primary: #ffffff;
   --color-secondary: #db3636;
   
   --color-secondary-dark: #2563eb;
@@ -42,4 +42,8 @@
 
 html {
   transition: background-color 300ms ease, color 300ms ease;
+}
+
+body {
+  background-color: #cecece;
 }

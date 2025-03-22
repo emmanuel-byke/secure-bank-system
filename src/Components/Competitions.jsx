@@ -5,7 +5,7 @@ export default function Competitions() {
 
 
     return (
-        <section className="flex flex-row flex-wrap justify-around items-center mt-20">
+        <section className="flex flex-row flex-wrap justify-around items-center mt-20" id="competitions">
             <InfoCard 
                 title='Mazda Demio Contest'
                 desc={`Get ready for an exciting opportunity! All account owners are invited to take part in an incredible competition 

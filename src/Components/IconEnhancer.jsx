@@ -7,8 +7,6 @@ export const NeonIcon = ({ color = "#39ff14", icon: Icon = FiHeart, size = 64, a
  }) => {
   const computedSize = typeof size === 'number' ? `${size}px` : size;
 
-  console.log(color);
-
   return (
     <div className="relative inline-block">
       {/* Neon glow layer */}
