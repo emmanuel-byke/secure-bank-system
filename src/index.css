@@ -11,7 +11,7 @@
   --font-poppins: "Poppins", sans-serif;
 }
 
-:root {
+/* :root {
   --color-neutral: #ffffff;
   --color-primary: #1b1e24;
   --color-secondary: #15db89;
@@ -19,6 +19,18 @@
   --color-secondary-dark: #1d4ed8;
   --color-border: #e5e7eb;
   --color-bg-secondary: #f3f4f6;
+} */
+
+:root {
+  --color-primary: #7c3aed;    /* Purple accent */
+  --color-secondary: #10b981;  /* Emerald green */
+  --color-neutral: #1f2937;    /* Dark gray */
+  --color-surface: #ffffff;    /* White */
+  --color-text: #111827;       /* Dark text */
+  --color-error: #ef4444;      /* Red for errors */
+  
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .dark {

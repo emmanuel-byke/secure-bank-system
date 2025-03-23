@@ -14,7 +14,7 @@ export default function Home() {
     <div className="font-montserrat">
       <Navbar 
         linkItems={linkItems}
-        isLoggedIn={true}
+        isLoggedIn={false}
       />
       <Hero />
       <TransactionDetails />

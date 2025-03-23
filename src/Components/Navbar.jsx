@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { BiLogOut, BiSun, BiMoon, BiUserCircle, BiCog } from "react-icons/bi";
 import { CiBank } from "react-icons/ci";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 export default function Navbar({ linkItems = [], isLoggedIn }) {
     const [activeLink, setActiveLink] = useState(linkItems[0]?.name || null);
     const [theme, setTheme] = useState('light');
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const dropdownRef = useRef(null);
+
+    
 
     // Theme handling
     useEffect(() => {
