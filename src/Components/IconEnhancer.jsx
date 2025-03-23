@@ -3,12 +3,12 @@ import { FiHeart } from 'react-icons/fi';
 
 
 export const NeonIcon = ({ color = "#39ff14", icon: Icon = FiHeart, size = 64, animate = 'animate-pulse',
-    stroke1=1.5, stroke2=0.5, color2="#ffffff"
+    stroke1=1.5, stroke2=0.5, color2="#ffffff", className="", onClick=()=>{},
  }) => {
   const computedSize = typeof size === 'number' ? `${size}px` : size;
 
   return (
-    <div className="relative inline-block">
+    <div className={`relative inline-block ${className}`} onClick={onClick}>
       {/* Neon glow layer */}
       <div className={`absolute inset-0 flex items-center justify-center ${animate}`}>
         <Icon

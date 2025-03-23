@@ -1,13 +1,21 @@
 import { 
     Search, UserPlus, ShieldAlert, Banknote, Activity, Database, Settings, 
-    LineChart, User, Home, Plus, Bell, DollarSign 
+    LineChart, User, Home, Plus, Bell, DollarSign, 
+    ArrowLeft
   } from "lucide-react";
   import { useState } from "react";
   import { NeonIcon } from "./IconEnhancer";
+import { useNavigate } from "react-router-dom";
   
   export default function AdminDashboard() {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const handleNavigation = (path) => {
+      navigate(path);
+    }
+
   
     // Mock data - replace with real API calls in a production system.
     const stats = [
@@ -45,16 +53,20 @@ import {
       <div className="min-h-screen p-8 text-[var(--color-primary)] bg-[var(--color-bg-primary)]">
         {/* Header */}
         <header className="flex justify-between items-center mb-8">
+          <NeonIcon 
+            icon={ArrowLeft} 
+            color="var(--color-secondary)" 
+            size={32}
+            className="bg-[var(--color-neutral)] rounded-full px-2 py-1 cursor-pointer"
+            onClick={()=>handleNavigation('/')}
+          />
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <Database className="text-[var(--color-secondary)]" />
             Banking Admin Portal
           </h1>
-          <div className="flex items-center gap-4">
             <button className="p-2 rounded-full bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-secondary)]/90">
               <Bell className="w-6 h-6" />
             </button>
-            <NeonIcon icon={Home} color="var(--color-primary)" size={40} />
-          </div>
         </header>
   
         {/* Quick Stats */}

@@ -1,8 +1,10 @@
-import { CreditCard, User, Settings, Lock, Mail, Bell } from "lucide-react";
+import { CreditCard, User, Settings, Lock, Mail, Bell, ArrowLeft } from "lucide-react";
 import { NeonIcon } from "./IconEnhancer";
 import { useState, useEffect } from "react";
 import { BiSun, BiMoon } from "react-icons/bi";
 import { combineUserNames } from "../Utils/Util";
+import { FiArrowLeft } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
     const [isEdit, setIsEdit] = useState(false);
@@ -13,6 +15,13 @@ export default function Profile() {
         "Account statement ready",
         "System maintenance scheduled"
     ]);
+
+    const navigate = useNavigate();
+    const handleNavigation = (path) => {
+        navigate(path);
+    }
+
+    
 
     const accountDetails = [
         { number: '123-123', isActive: true, type: 'Personal', currency: 'K', balance: 50.4, users: [{ firstname: "Emmanuel", lastname: "Basikolo" }] }
@@ -41,7 +50,17 @@ export default function Profile() {
         <main className="w-full min-h-screen flex flex-col text-[var(--color-primary)] bg-[var(--color-bg)] p-8">
             {/* Header Section */}
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold font-poppins">Account Overview</h1>
+                <div className="flex flex-row items-center gap-5 text-slate-800">
+                    <NeonIcon 
+                        icon={FiArrowLeft}
+                        size={40}
+                        color="var(--color-secondary)"
+                        color2="var(--color-neutral)"
+                        className="cursor-pointer"
+                        onClick={()=>handleNavigation('/')}
+                    />
+                    <h1 className="text-3xl font-bold font-poppin">Account Overview</h1>
+                </div>
                 <div className="flex items-center gap-4">
                     <button className="p-2 rounded-full bg-[var(--color-bg-secondary)] hover:bg-[var(--color-border)] transition-colors">
                         <Bell className="size-6 text-[var(--color-primary)]" />
