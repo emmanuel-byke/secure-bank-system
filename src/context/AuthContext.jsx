@@ -28,9 +28,9 @@ export const AuthProvider = ({ children }) => {
     return response;
   };
 
-  const login = async (email, password) => {
+  const login = async (formData) => {
     await getCSRFToken();
-    const response = await apiClient.post('users/login/', { email, password });
+    const response = await apiClient.post('users/login/', formData);
     setUser(response.data.user);
     return response;
   };

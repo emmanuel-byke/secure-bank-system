@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiLock, FiMail, FiLogIn } from 'react-icons/fi';
 import { ImSpinner8 } from 'react-icons/im';
+import { useAuth } from '../context/AuthContext';
 
 
 
@@ -33,20 +34,19 @@ const InputField = ({ label, name, type = 'text', Icon, required = true, value, 
 
 export default function Login() {
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: '',
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const validateForm = () => {
     const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
+    if (!formData.username) {
+      newErrors.username = 'username is required';
     }
     if (!formData.password) {
       newErrors.password = 'Password is required';
@@ -62,11 +62,11 @@ export default function Login() {
 
     setLoading(true);
     try {
-        console.log(formData)
-      // await login(formData);
-      // navigate('/dashboard');
+      await login(formData);
+      navigate('/');
     } catch (error) {
       setErrors(prev => ({ ...prev, general: error.message }));
+      console.error(error.response?.data);
     } finally {
       setLoading(false);
     }
@@ -100,13 +100,13 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <InputField
-            label="Email Address"
-            name="email"
-            type="email"
+            label="Username"
+            name="username"
+            type="username"
             Icon={FiMail}
 
-            value={formData.email}
-            error={errors.email}
+            value={formData.username}
+            error={errors.username}
             onChange={handleChange}
           />
 

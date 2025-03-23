@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiUser, FiLock, FiMail, FiArrowRight } from 'react-icons/fi';
 import { ImSpinner8 } from 'react-icons/im';
 import { NeonIcon } from './IconEnhancer';
 import { Shield } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 
 
@@ -34,28 +35,28 @@ const InputField = ({ label, name, type = 'text', Icon, required = false, value,
 );
 
 
-const SignupPage = () => {
+export default function SignupPage() {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
-    email: '',
+    username: '',
     password: '',
     confirm_password: '',
     gender: 'O'
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const { signup } = useAuth()
+  const navigate = useNavigate(); 
 
   // Enhanced validation function
   const validateForm = () => {
     const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const usernameRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
-    }
+    if (!formData.username) {
+      newErrors.username = 'Username is required';
+    } 
     if (formData.password.length < 4) {
       newErrors.password = 'Password must be at least 4 characters';
     }
@@ -82,11 +83,11 @@ const SignupPage = () => {
 
     setLoading(true);
     try {
-        console.log(formData);
-      // await signup(formData);
-      // navigate('/profile');
+      await signup(formData);
+      navigate('/');
     } catch (error) {
       setErrors(prev => ({ ...prev, general: error.message }));
+      console.log(error?.response?.data);
     } finally {
       setLoading(false);
     }
@@ -136,13 +137,13 @@ const SignupPage = () => {
           </div>
 
           <InputField
-            label="Email Address"
-            name="email"
-            type="email"
+            label="Username"
+            name="username"
+            type="text"
             Icon={FiMail}
             required={true}
-            value={formData.email}
-            error={errors.email}
+            value={formData.username}
+            error={errors.username}
             onChange={handleChange}
           />
 
@@ -231,5 +232,3 @@ const SignupPage = () => {
     </div>
   );
 };
-
-export default SignupPage;
