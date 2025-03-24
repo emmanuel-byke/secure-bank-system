@@ -1,15 +1,15 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  // baseURL: 'http://localhost:8000/',
-  baseURL: 'https://secure-bank-system-drf.onrender.com/',
+  baseURL: 'http://localhost:8000/',
+  // baseURL: 'https://secure-bank-system-drf.onrender.com/',
   withCredentials: true,
 });
 
 let csrfToken = '';
 
 export const getCSRFToken = async () => {
-  const response = await apiClient.get('users/csrftoken/');
+  const response = await apiClient.get('userAccount/csrftoken/');
   csrfToken = response.data.csrfToken;
   return csrfToken;
 };

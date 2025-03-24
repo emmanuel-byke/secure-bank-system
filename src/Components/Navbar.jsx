@@ -2,12 +2,16 @@ import { useState, useEffect, useRef } from "react";
 import { BiLogOut, BiSun, BiMoon, BiUserCircle, BiCog } from "react-icons/bi";
 import { CiBank } from "react-icons/ci";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { chooseUserName } from "../Utils/Util";
 
-export default function Navbar({ linkItems = [], isLoggedIn }) {
+export default function Navbar({ linkItems = [] }) {
     const [activeLink, setActiveLink] = useState(linkItems[0]?.name || null);
     const [theme, setTheme] = useState('light');
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const { user, logout } = useAuth();
+    const isLoggedIn = !!user;
 
     
 
@@ -101,7 +105,7 @@ export default function Navbar({ linkItems = [], isLoggedIn }) {
                             aria-expanded={isProfileOpen}
                         >
                             <BiUserCircle className="size-6 text-[var(--color-secondary)]" />
-                            <span className="hidden sm:block font-medium">John Doe</span>
+                            <span className="hidden sm:block font-medium">{chooseUserName(user)}</span>
                         </button>
 
                         <div 
@@ -137,6 +141,7 @@ export default function Navbar({ linkItems = [], isLoggedIn }) {
                                     hover:bg-[var(--color-secondary)]/10 transition-colors"
                                 onClick={() => {
                                     setIsProfileOpen(false);
+                                    logout();
                                 }}
                             >
                                 <BiLogOut className="size-5" />

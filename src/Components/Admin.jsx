@@ -3,24 +3,60 @@ import {
     LineChart, User, Home, Plus, Bell, DollarSign, 
     ArrowLeft
   } from "lucide-react";
-  import { useState } from "react";
+  import { useEffect, useState } from "react";
   import { NeonIcon } from "./IconEnhancer";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { chooseUserName, relativeTime } from "../Utils/Util";
+import { ImSpinner, ImSpinner10, ImSpinner11, ImSpinner2, ImSpinner3, ImSpinner4, ImSpinner5, ImSpinner6, ImSpinner7, ImSpinner8, ImSpinner9 } from "react-icons/im";
+import { SectionWithPagination } from "../Utils/AdditionFunc";
   
   export default function AdminDashboard() {
     const [selectedUser, setSelectedUser] = useState(null);
+    const [allUsers, setAllUsers] = useState(null);
+    const [currentUsersPage, setCurrentUsersPage] = useState(1);
+    const [userSearchTerm, setUserSearchTerm] = useState('');
+    const [refreshAllUsers, setRefreshAllUsers] = useState(false);
+    const [blockUserId, setBlockUserId] = useState(null);
+
+
+    const [activeUsersCount, setActiveUsersCount] = useState(0);
     const [isUserModalOpen, setIsUserModalOpen] = useState(false);
     const navigate = useNavigate();
+    const { getAllUsers, getActiveUserStat, toggleBlock } = useAuth();
+
+    useEffect(()=>{
+      const fetchAllUsers = async() => {
+        const response = await getAllUsers({params: {search: userSearchTerm}});
+        setAllUsers(response.data);
+        const active = await getActiveUserStat();
+        setActiveUsersCount(active.data.active_count)
+      }
+      fetchAllUsers();
+    }, [refreshAllUsers, userSearchTerm]);
+    
 
     const handleNavigation = (path) => {
       navigate(path);
     }
 
+    const handleBlock = async(user_id) => {
+      try{
+        setBlockUserId(user_id);
+        await toggleBlock({user_id});
+        setRefreshAllUsers(prev=>!prev);
+      } catch(error){
+        console.error(error.response?.data);
+      } finally {
+        setBlockUserId(null);
+      }
+    }
+
   
     // Mock data - replace with real API calls in a production system.
     const stats = [
-      { title: "Total Users", value: "2,845", icon: UserPlus, change: "+12.3%" },
-      { title: "Active Accounts", value: "15,492", icon: Banknote, change: "+4.1%" },
+      { title: "Total Users", value: allUsers?.length??0, icon: UserPlus, change: "+12.3%" },
+      { title: "Active Accounts", value: activeUsersCount, icon: Banknote, change: "+4.1%" },
       { title: "Transactions (24h)", value: "$452M", icon: LineChart, change: "-2.8%" },
       { title: "Fraud Alerts", value: "23", icon: ShieldAlert, change: "+18.4%" },
     ];
@@ -96,19 +132,15 @@ import { useNavigate } from "react-router-dom";
           <div className="lg:col-span-2 bg-[var(--color-neutral)] p-6 rounded-xl shadow-lg">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold">User Management</h2>
-              <div className="flex gap-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-3 text-[var(--color-primary)]/50 w-5 h-5" />
-                  <input
-                    type="text"
-                    placeholder="Search users..."
-                    className="pl-10 pr-4 py-2 bg-[var(--color-primary)] text-[var(--color-neutral)] rounded-lg focus:outline-none"
-                  />
-                </div>
-                <button className="flex items-center gap-1 bg-[var(--color-primary)]/60 text-[var(--color-neutral)] px-4 py-2 rounded-lg hover:bg-[var(--color-primary)] transition cursor-pointer">
-                  <Plus className="w-4 h-4" />
-                  New User
-                </button>
+              <div className="relative">
+                <Search className="absolute left-3 top-3 text-[var(--color-neutral)]/50 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Search users..."
+                  className="pl-10 pr-4 py-2 bg-[var(--color-primary)] text-[var(--color-neutral)] rounded-lg focus:outline-none"
+                  value={userSearchTerm}
+                  onChange={(e)=>setUserSearchTerm(e.target.value)}
+                />
               </div>
             </div>
   
@@ -124,42 +156,103 @@ import { useNavigate } from "react-router-dom";
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user) => (
-                    <tr 
-                      key={user.id} 
-                      className="border-b border-[var(--color-border)] hover:bg-[var(--color-bg-secondary)] transition"
-                    >
-                      <td className="py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="bg-[var(--color-bg-secondary)] p-2 rounded-full">
-                            <User className="w-5 h-5 text-[var(--color-secondary)]" />
+
+
+
+
+                {
+                allUsers && 
+                <SectionWithPagination 
+                  items={allUsers}
+                  page={currentUsersPage}
+                  setPage={setCurrentUsersPage}
+                  itemsPerPage={2}
+                  renderItem={users=>(
+
+
+
+
+                    users.map((user) => (
+                      <tr 
+                        key={user.id} 
+                        className="border-b border-[var(--color-border)] hover:bg-[var(--color-bg-secondary)] transition"
+                      >
+                        <td className="py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="bg-[var(--color-bg-secondary)] p-2 rounded-full">
+                              <User className="w-5 h-5 text-[var(--color-secondary)]" />
+                            </div>
+                            <div>
+                              <p className="font-medium">{chooseUserName(user)}</p>
+                              <p className="text-sm text-[var(--color-primary)]/70">{user.username}</p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-medium">{user.name}</p>
-                            <p className="text-sm text-[var(--color-primary)]/70">{user.email}</p>
+                        </td>
+                        <td>{user.user_role_display}</td>
+                        <td>
+                          <span 
+                            className={`px-2 py-1 rounded-full text-sm ${!user.is_blocked ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                          >
+                            { user.is_blocked ? 'Blocked' : 'Active' }
+                          </span>
+                        </td>
+                        <td>{relativeTime(user.last_login)}</td>
+                        <td>
+                          <div className="flex gap-4">
+                            <button className="text-[var(--color-primary)] hover:text-[var(--color-primary)]/80 transition cursor-pointer">
+                              Add Account
+                            </button>
+                            
+                            {
+                              blockUserId===user.id && user.is_blocked ? 
+                                <div className="text-emerald-500 flex flex-row justify-center gap-1 text-sm">
+                                  <ImSpinner9 className="animate-spin size-4" /> <h3>Activating</h3> 
+                                </div> :
+                              blockUserId===user.id && !user.is_blocked ? 
+                                <div className="text-red-500 flex flex-row justify-center items-center gap-1 text-sm">
+                                  <ImSpinner10 className="animate-spin size-4" /> <h3>Blocking</h3> 
+                                </div> :
+                                <button 
+                                  className={`${user.is_blocked?'text-emerald-400 hover:text-emerald-600':'text-red-400 hover:text-red-500'} transition cursor-pointer`}
+                                  onClick={()=>handleBlock(user.id)}
+                                >
+                                  {user.is_blocked? 'Activate' : 'Block'}
+                                </button>
+  
+                            }
                           </div>
-                        </div>
-                      </td>
-                      <td>{user.role}</td>
-                      <td>
-                        <span className={`px-2 py-1 rounded-full text-sm ${user.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                          {user.status}
-                        </span>
-                      </td>
-                      <td>{user.lastLogin}</td>
-                      <td>
-                        <div className="flex gap-4">
-                          <button className="text-[var(--color-primary)] hover:text-[var(--color-primary)]/80 transition cursor-pointer">
-                            Add Account
-                          </button>
-                          <button className="text-red-400 hover:text-red-500 transition cursor-pointer">
-                            Block
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                      </tr>
+                    ))
+
+
+
+
+
+
+
+
+
+                  )}
+                />
+                }
+
+
+
+
+
+
+
+
+
+                  
                 </tbody>
+
+
+
+
+
+
               </table>
             </div>
           </div>

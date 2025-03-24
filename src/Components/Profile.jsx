@@ -5,6 +5,7 @@ import { BiSun, BiMoon } from "react-icons/bi";
 import { combineUserNames } from "../Utils/Util";
 import { FiArrowLeft } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Profile() {
     const [isEdit, setIsEdit] = useState(false);
@@ -15,6 +16,8 @@ export default function Profile() {
         "Account statement ready",
         "System maintenance scheduled"
     ]);
+    const { user, updateUser } = useAuth();
+    const [updatedUser, setUpdatedUser] = useState(null);
 
     const navigate = useNavigate();
     const handleNavigation = (path) => {
@@ -26,6 +29,12 @@ export default function Profile() {
     const accountDetails = [
         { number: '123-123', isActive: true, type: 'Personal', currency: 'K', balance: 50.4, users: [{ firstname: "Emmanuel", lastname: "Basikolo" }] }
     ];
+
+    useEffect(() => {
+        if (user) {
+          setUpdatedUser(user);
+        }
+      }, [user]);
 
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme') || 'light';
@@ -94,23 +103,29 @@ export default function Profile() {
                         
                         <div className="w-full space-y-4">
                             {[
-                                { label: "First Name:", value: "Emmanuel" },
-                                { label: "Last Name:", value: "Basikolo" },
-                                { label: "Phone:", value: "0886467564" },
-                                { label: "Gender:", value: "Male" }
+                                { label: "First Name:", value: updatedUser?.first_name??'', key_name: 'first_name' },
+                                { label: "Last Name:", value: updatedUser?.last_name??'', key_name: 'last_name' },
+                                { label: "Phone:", value: updatedUser?.phone_number??'', key_name: 'phone_number' },
+                                { label: "Gender:", value: updatedUser?.gender_display, key_name: 'gender' }
                             ].map((field, index) => (
                                 <div key={index} className="flex justify-between items-center p-2 bg-[var(--color-bg-secondary)] rounded-lg">
                                     <span className="text-sm font-medium">{field.label}</span>
                                     {isEdit ? (
                                         field.label === "Gender:" ? (
-                                            <select className="bg-[var(--color-neutral)] px-2 py-1 rounded">
-                                                <option>Male</option>
-                                                <option>Female</option>
+                                            <select 
+                                                className="bg-[var(--color-neutral)] px-2 py-1 rounded"
+                                                onChange={(e)=>setUpdatedUser({...updatedUser, [field.key_name]: e.target.value})}
+                                            >
+                                                <option value='M'>Male</option>
+                                                <option value='F'>Female</option>
+                                                <option value='T'>Trans</option>
+                                                <option value='O'>Other</option>
                                             </select>
                                         ) : (
                                             <input
                                                 type="text"
-                                                defaultValue={field.value}
+                                                value={field.value}
+                                                onChange={(e)=>setUpdatedUser({...updatedUser, [field.key_name]: e.target.value})}
                                                 className="bg-[var(--color-neutral)] px-2 py-1 rounded w-32"
                                             />
                                         )
@@ -122,7 +137,10 @@ export default function Profile() {
                         </div>
 
                         <button
-                            onClick={() => setIsEdit(!isEdit)}
+                            onClick={() => {
+                                isEdit && updatedUser?.id && updateUser(updatedUser.id, updatedUser);
+                                setIsEdit(!isEdit)
+                            }}
                             className="w-full py-3 bg-[var(--color-secondary)] text-white rounded-lg hover:bg-[var(--color-secondary-dark)] transition-colors"
                         >
                             {isEdit ? 'Save Changes' : 'Edit Profile'}
